@@ -1,0 +1,6 @@
+site_name: FastAPI Demo
+theme:
+  name: material
+
+plugins: 
+  - drawio

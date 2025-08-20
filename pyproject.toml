@@ -15,5 +15,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "mkdocs-drawio>=1.11.2",
+    "mkdocs-material>=9.6.17",
     "ruff>=0.12.9",
 ]
