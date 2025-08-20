@@ -5,7 +5,7 @@ from .routers import health, users
 from .database import Base, engine
 load_dotenv()
 
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     Base.metadata.create_all(engine)
     yield
 

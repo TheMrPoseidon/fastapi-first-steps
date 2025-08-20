@@ -1,7 +1,6 @@
-import bcrypt
-
 from typing import List
 from fastapi import APIRouter, status
+import bcrypt
 
 from ..dependencies import SqlAlchemySessionDep
 from ..schemas.users import UserResponse, UserCreate
@@ -19,7 +18,12 @@ router = APIRouter(
 async def get_users(duckdb: SqlAlchemySessionDep) -> List[UserResponse]:
     db_users = duckdb.query(User).all()
 
-    return [UserResponse(id=db_user.id, username=db_user.username, email=db_user.email, roles=str(db_user.role).split(" ")) for db_user in db_users]
+    return [UserResponse(
+        id=db_user.id,
+        username=db_user.username,
+        email=db_user.email,
+        roles=str(db_user.role).split(" ")
+    ) for db_user in db_users]
 
 @router.get(
     "/{user_id}"
@@ -27,7 +31,12 @@ async def get_users(duckdb: SqlAlchemySessionDep) -> List[UserResponse]:
 async def get_user(user_id: int, duckdb: SqlAlchemySessionDep) -> UserResponse:
     db_user = duckdb.query(User).get(user_id)
 
-    return UserResponse(id=db_user.id, username=db_user.username, email=db_user.email, roles=str(db_user.role).split(" "))
+    return UserResponse(
+        id=db_user.id,
+        username=db_user.username,
+        email=db_user.email,
+        roles=str(db_user.role).split(" ")
+    )
 
 @router.post(
     "",
@@ -39,12 +48,17 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
         email=user.email,
         password=bcrypt.hashpw(user.password.get_secret_value().encode('utf-8'), bcrypt.gensalt()),
         role=" ".join(sorted(user.roles)))
-    
+
     duckdb.add(db_user)
     duckdb.commit()
     duckdb.refresh(db_user)
 
-    return UserResponse(id=db_user.id, username=db_user.username, email=db_user.email, roles=str(db_user.role).split(" "))
+    return UserResponse(
+        id=db_user.id,
+        username=db_user.username,
+        email=db_user.email,
+        roles=str(db_user.role).split(" ")
+    )
 
 @router.delete(
     "/{user_id}",
