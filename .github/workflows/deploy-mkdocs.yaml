@@ -33,13 +33,13 @@ jobs:
 
       - name: Build MkDocs
         run: |
-          uv run mkdocs build --config-file ./mkdocs.yml --site-dir public
+          uv run mkdocs build --config-file ./mkdocs.yml
 
       - name: Upload static files as artifact
         id: deployment
         uses: actions/upload-pages-artifact@v3
         with:
-          path: public/
+          path: site/
   
   deploy:
     needs: build
