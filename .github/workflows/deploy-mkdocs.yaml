@@ -27,8 +27,7 @@ jobs:
         uses: astral-sh/setup-uv@v6
 
       - name: Build MkDocs
-        run: |
-          uv run mkdocs build --config-file ./mkdocs.yml
+        run: uv run mkdocs build --config-file ./mkdocs.yml
 
       - name: Upload static files as artifact
         id: deployment
