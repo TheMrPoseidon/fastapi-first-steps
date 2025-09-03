@@ -1,0 +1,25 @@
+name: Test and Lint Code
+
+on:
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      - name: Run tests
+        run: uv run pytest tests
+
+      - name: Run linter
+        uses: astral-sh/ruff-action@v3
+        with:
+          args: "format --check --diff"

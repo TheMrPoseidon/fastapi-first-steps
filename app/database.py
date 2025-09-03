@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 
 load_dotenv()
 
-engine = create_engine(os.getenv('DATABASE_URL'), echo=True)
+engine = create_engine(os.getenv("DATABASE_URL"), echo=True)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 

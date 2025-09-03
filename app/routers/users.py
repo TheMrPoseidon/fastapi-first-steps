@@ -9,25 +9,26 @@ from ..models.user import User
 
 router = APIRouter(
     prefix="/users",
-    tags=['users'],
+    tags=["users"],
 )
 
-@router.get(
-    ""
-)
+
+@router.get("")
 async def get_users(duckdb: SqlAlchemySessionDep) -> List[UserResponse]:
     db_users = duckdb.query(User).all()
 
-    return [UserResponse(
-        id=db_user.id,
-        username=db_user.username,
-        email=db_user.email,
-        roles=str(db_user.role).split(" ")
-    ) for db_user in db_users]
+    return [
+        UserResponse(
+            id=db_user.id,
+            username=db_user.username,
+            email=db_user.email,
+            roles=str(db_user.role).split(" "),
+        )
+        for db_user in db_users
+    ]
 
-@router.get(
-    "/{user_id}"
-)
+
+@router.get("/{user_id}")
 async def get_user(user_id: int, duckdb: SqlAlchemySessionDep) -> UserResponse:
     db_user = duckdb.query(User).get(user_id)
 
@@ -35,8 +36,9 @@ async def get_user(user_id: int, duckdb: SqlAlchemySessionDep) -> UserResponse:
         id=db_user.id,
         username=db_user.username,
         email=db_user.email,
-        roles=str(db_user.role).split(" ")
+        roles=str(db_user.role).split(" "),
     )
+
 
 @router.post(
     "",
@@ -46,8 +48,11 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
     db_user = User(
         username=user.username,
         email=user.email,
-        password=bcrypt.hashpw(user.password.get_secret_value().encode('utf-8'), bcrypt.gensalt()),
-        role=" ".join(sorted(user.roles)))
+        password=bcrypt.hashpw(
+            user.password.get_secret_value().encode("utf-8"), bcrypt.gensalt()
+        ),
+        role=" ".join(sorted(user.roles)),
+    )
 
     duckdb.add(db_user)
     duckdb.commit()
@@ -57,13 +62,11 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
         id=db_user.id,
         username=db_user.username,
         email=db_user.email,
-        roles=str(db_user.role).split(" ")
+        roles=str(db_user.role).split(" "),
     )
 
-@router.delete(
-    "/{user_id}",
-    status_code=status.HTTP_204_NO_CONTENT
-)
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user(user_id: int, duckdb: SqlAlchemySessionDep):
     db_user = duckdb.query(User).get(user_id)
     duckdb.delete(db_user)

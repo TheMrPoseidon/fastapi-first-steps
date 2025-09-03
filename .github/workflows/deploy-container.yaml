@@ -1,17 +1,8 @@
 name: Build and Push Container Image
 
 on:
-  push:
-    tags:
-      - 'v*'
-    branches: [ main ]
-    paths:
-      - pyproject.toml
-      - Dockerfile
-      - app/**
-  pull_request:
-    branches:
-      - 'main'
+  release:
+    types: [published]
   workflow_dispatch:
 
 env:

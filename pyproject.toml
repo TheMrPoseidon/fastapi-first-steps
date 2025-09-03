@@ -17,5 +17,22 @@ dependencies = [
 dev = [
     "mkdocs-drawio>=1.11.2",
     "mkdocs-material>=9.6.17",
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
     "ruff>=0.12.9",
+]
+
+[tool.pytest.ini_options]
+addopts = """
+    -ra -q
+    --cov=src
+    --cov-report=term-missing
+    --cov-report=html
+"""
+minversion = "6.0"
+testpaths = [
+    "tests"
+]
+pythonpath = [
+    "src"
 ]
