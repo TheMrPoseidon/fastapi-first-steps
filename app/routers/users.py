@@ -22,7 +22,7 @@ async def get_users(duckdb: SqlAlchemySessionDep) -> List[UserResponse]:
             id=db_user.id,
             username=db_user.username,
             email=db_user.email,
-            roles=str(db_user.role).split(" "),
+            roles=db_user.role,
         )
         for db_user in db_users
     ]
@@ -36,7 +36,7 @@ async def get_user(user_id: int, duckdb: SqlAlchemySessionDep) -> UserResponse:
         id=db_user.id,
         username=db_user.username,
         email=db_user.email,
-        roles=str(db_user.role).split(" "),
+        roles=db_user.role,
     )
 
 
@@ -51,7 +51,7 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
         password=bcrypt.hashpw(
             user.password.get_secret_value().encode("utf-8"), bcrypt.gensalt()
         ),
-        role=" ".join(sorted(user.roles)),
+        role=user.roles,
     )
 
     duckdb.add(db_user)
@@ -62,7 +62,7 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
         id=db_user.id,
         username=db_user.username,
         email=db_user.email,
-        roles=str(db_user.role).split(" "),
+        roles=db_user.role,
     )
 
 
