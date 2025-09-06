@@ -1,6 +1,6 @@
 from fastapi import APIRouter, status
+from fastapi.responses import Response
 
-from ..schemas.health import HealthStatus
 
 router = APIRouter(
     prefix="/health",
@@ -9,5 +9,5 @@ router = APIRouter(
 
 
 @router.get("", status_code=status.HTTP_200_OK)
-async def get_health():
-    return HealthStatus()
+async def get_health() -> Response:
+    return Response(status_code=200, content="healthy")

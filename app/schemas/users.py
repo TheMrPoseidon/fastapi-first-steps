@@ -6,7 +6,12 @@ class UserBase(BaseModel):
     username: str
     email: EmailStr
     roles: List[
-        Annotated[str, StringConstraints(pattern="^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$")]
+        Annotated[
+            str,
+            StringConstraints(
+                pattern="^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$"
+            ),
+        ]
     ] = ["user"]
 
 
