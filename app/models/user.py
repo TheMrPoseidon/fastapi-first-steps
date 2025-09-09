@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, Sequence, JSON
 from ..database import Base
+from ..schemas.users import UserResponse
 
 
 class User(Base):
@@ -9,4 +10,12 @@ class User(Base):
     username = Column(String, unique=True, index=True)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-    role = Column(JSON, nullable=False, default=list)
+    roles = Column(JSON, nullable=False, default=list)
+
+    def to_response(self) -> UserResponse:
+        return UserResponse(
+            id=self.id,
+            username=self.username,
+            email=self.email,
+            roles=self.roles,
+        )

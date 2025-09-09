@@ -1,11 +1,11 @@
 from typing import List
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 from fastapi.responses import Response
 
 import bcrypt
 
 from ..dependencies import SqlAlchemySessionDep
-from ..schemas.users import UserResponse, UserCreate
+from ..schemas.users import UserResponse, UserCreate, UserUpdate
 
 from ..models.user import User
 
@@ -17,17 +17,9 @@ router = APIRouter(
 
 @router.get("")
 async def get_users(duckdb: SqlAlchemySessionDep) -> List[UserResponse]:
-    db_users = duckdb.query(User).all()
+    users = duckdb.query(User).all()
 
-    return [
-        UserResponse(
-            id=db_user.id,
-            username=db_user.username,
-            email=db_user.email,
-            roles=db_user.role,
-        )
-        for db_user in db_users
-    ]
+    return [user.to_response() for user in users]
 
 
 @router.post(
@@ -41,31 +33,42 @@ async def create_user(user: UserCreate, duckdb: SqlAlchemySessionDep) -> UserRes
         password=bcrypt.hashpw(
             user.password.get_secret_value().encode("utf-8"), bcrypt.gensalt()
         ),
-        role=user.roles,
+        roles=user.roles,
     )
 
     duckdb.add(user)
     duckdb.commit()
     duckdb.refresh(user)
 
-    return UserResponse(
-        id=user.id,
-        username=user.username,
-        email=user.email,
-        roles=user.role,
-    )
+    return user.to_response()
 
 
 @router.get("/{user_id}")
 async def get_user(user_id: int, duckdb: SqlAlchemySessionDep) -> UserResponse:
-    user = duckdb.query(User).get(user_id)
+    user: User = duckdb.query(User).get(user_id)
 
-    return UserResponse(
-        id=user.id,
-        username=user.username,
-        email=user.email,
-        roles=user.role,
-    )
+    return user.to_response()
+
+
+@router.put("/{user_id}")
+async def update_user(
+    user_id: int, update: UserUpdate, duckdb: SqlAlchemySessionDep
+) -> UserResponse:
+    user: User = duckdb.query(User).get(user_id)
+
+    if update.email is not None:
+        user.email = update.email
+    if update.roles is not None:
+        user.roles = update.roles
+    if update.password is not None:
+        user.password = bcrypt.hashpw(
+            user.password.get_secret_value().encode("utf-8"), bcrypt.gensalt()
+        )
+
+    duckdb.commit()
+    duckdb.refresh(user)
+
+    return user.to_response()
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)

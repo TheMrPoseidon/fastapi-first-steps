@@ -1,4 +1,4 @@
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from pydantic import BaseModel, EmailStr, SecretStr, StringConstraints
 
 
@@ -21,3 +21,18 @@ class UserCreate(UserBase):
 
 class UserResponse(UserBase):
     id: int
+
+
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr]
+    roles: Optional[
+        List[
+            Annotated[
+                str,
+                StringConstraints(
+                    pattern="^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$"
+                ),
+            ]
+        ]
+    ]
+    password: Optional[SecretStr]
