@@ -1,9 +1,12 @@
 # FastAPI Demo
 
 ## Environment Variables
-| Name | Required | Description | Example |
-|---|---|---|---|
-| DATABASE_URL | yes | | `duckdb:///database.de` |
+| Name                        | Required | Description | Example                 |
+|-----------------------------|----------|-------------|-------------------------|
+| DATABASE_URL                | yes      |             | `duckdb:///database.db` |
+| ACCESS_TOKEN_SECRET         | yes      |             |                         |
+| ACCESS_TOKEN_ALGORITHM      | yes      |             | `HS256`                 |
+| ACCESS_TOKEN_EXPIRE_MINUTES | yes      |             | `30`                    |
 
 ## Build
 ```bash

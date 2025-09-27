@@ -1,11 +1,11 @@
-from typing import List, Annotated, Optional
+from typing import Annotated
 from pydantic import BaseModel, EmailStr, SecretStr, StringConstraints
 
 
 class UserBase(BaseModel):
     username: str
     email: EmailStr
-    roles: List[
+    roles: list[
         Annotated[
             str,
             StringConstraints(
@@ -24,9 +24,9 @@ class UserResponse(UserBase):
 
 
 class UserUpdate(BaseModel):
-    email: Optional[EmailStr]
-    roles: Optional[
-        List[
+    email: EmailStr | None
+    roles: (
+        list[
             Annotated[
                 str,
                 StringConstraints(
@@ -34,5 +34,6 @@ class UserUpdate(BaseModel):
                 ),
             ]
         ]
-    ]
-    password: Optional[SecretStr]
+        | None
+    )
+    password: SecretStr | None

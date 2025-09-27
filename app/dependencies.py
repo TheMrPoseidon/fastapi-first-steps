@@ -5,7 +5,7 @@ from fastapi import Depends
 from .database import SessionLocal
 
 
-def get_sqlalchemy_session():
+async def get_sqlalchemy_session():
     with SessionLocal() as db:
         yield db
 
