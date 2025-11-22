@@ -19,7 +19,7 @@ SECRET_KEY = os.getenv("ACCESS_TOKEN_SECRET")
 ALGORITHM = os.getenv("ACCESS_TOKEN_ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["sha512_crypt"], deprecated="auto")
 
 
 def verify_password(plain_password, hashed_password):
@@ -44,8 +44,15 @@ async def get_current_user_by_token(
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
     user_name = payload.get("sub")
-    return db.query(User).filter(User.email == user_name).first()
+    return db.query(User).filter(User.username == user_name).first()
 
 
 UserSessionDep = Annotated[UserResponse, Depends(get_current_user_by_token)]
@@ -70,8 +77,8 @@ async def login_for_access_token(
         )
 
     payload = {
-        "sub": user.email,
-        "exp": datetime.now(timezone.utc) + timedelta(ACCESS_TOKEN_EXPIRE_MINUTES),
+        "sub": user.username,
+        "exp": int((datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp())
     }
 
     return Token(
