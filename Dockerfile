@@ -1,4 +1,9 @@
 FROM ghcr.io/astral-sh/uv:python3.12-trixie-slim
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /code
 
 COPY .python-version pyproject.toml uv.lock /code/
