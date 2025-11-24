@@ -50,7 +50,7 @@ async def get_current_user_by_token(
             detail="Invalid token",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     user_name = payload.get("sub")
     return db.query(User).filter(User.username == user_name).first()
 
@@ -78,7 +78,12 @@ async def login_for_access_token(
 
     payload = {
         "sub": user.username,
-        "exp": int((datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)).timestamp())
+        "exp": int(
+            (
+                datetime.now(timezone.utc)
+                + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+            ).timestamp()
+        ),
     }
 
     return Token(

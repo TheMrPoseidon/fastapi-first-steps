@@ -1,6 +1,8 @@
 from typing import Annotated
 from pydantic import BaseModel, EmailStr, SecretStr, StringConstraints
 
+userRolePattern: str = r"^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$"
+
 
 class UserBase(BaseModel):
     username: str
@@ -8,9 +10,7 @@ class UserBase(BaseModel):
     roles: list[
         Annotated[
             str,
-            StringConstraints(
-                pattern="^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$"
-            ),
+            StringConstraints(pattern=userRolePattern),
         ]
     ] = ["user"]
 
@@ -29,9 +29,7 @@ class UserUpdate(BaseModel):
         list[
             Annotated[
                 str,
-                StringConstraints(
-                    pattern="^(?:(?<tenant>[a-zA-Z]+)\.)?(?<action>[a-zA-Z]+)$"
-                ),
+                StringConstraints(pattern=userRolePattern),
             ]
         ]
         | None
