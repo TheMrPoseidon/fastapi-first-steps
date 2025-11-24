@@ -204,3 +204,6 @@ __marimo__/
 
 # Local database
 database.db
+
+# macOS
+.DS_Store

@@ -9,7 +9,7 @@ WORKDIR /code
 COPY .python-version pyproject.toml uv.lock /code/
 RUN uv sync --frozen --no-cache
 
-COPY ./app /code/app
+COPY ./src /code/app
 
 HEALTHCHECK --interval=30s --timeout=1s CMD curl --fail http://localhost:8080/health || exit 1
 EXPOSE 8080/tcp
