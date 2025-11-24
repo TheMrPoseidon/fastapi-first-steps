@@ -22,6 +22,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          branch: main 
       
       - name: Extract version from release tag
         id: version
@@ -40,8 +43,10 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "Bump version to ${VERSION}"
-          file_pattern: "pyproject.toml src/main.py"
-          tag_name: "${{ env.VERSION }}"
+          branch: main
+          file_pattern: |
+            pyproject.toml
+            src/main.py
 
       - name: Log in to DockerHub
         uses: docker/login-action@v3
